@@ -33,7 +33,7 @@ def get_random_channels_with_subscribers():
             part='snippet',
             type='channel',
             maxResults=70,
-            order='viewCount'  # Ordina per popolarità, ma puoi cambiare il parametro
+            order='viewCount'  # Ordina per popolarità
         )
         search_response = search_request.execute()
 

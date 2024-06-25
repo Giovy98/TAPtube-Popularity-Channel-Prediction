@@ -26,7 +26,7 @@ def main():
     spark.sparkContext.setLogLevel("ERROR")
 
     
-    # Kafka message structure and Train message structure
+    # Struttura dello schema del training dataset
     schema_training = tp.StructType([
         tp.StructField("ChannelID:", tp.StringType(), False),
         tp.StructField("Title", tp.StringType(), False),
@@ -37,7 +37,7 @@ def main():
         tp.StructField("Join_date", tp.DateType(), False)
     ])
     
-    # Funziona
+    # Leggo il dataset
     print("Reading training set...")
     df = spark.read.csv(dataset_path,
                         schema=schema_training,
@@ -59,7 +59,7 @@ def main():
     model = pipeline.fit(df)
     print(".....Fine Addestramento....")
 
-    # Saving models in local on the mounted volume to be loaded later
+    # Salvo il modello appena allenato in locale per poi ricaricarlo nel code (streaming.py)
     model.write().overwrite().save(basePath + "/model")
     print("Task completed!")
 
@@ -68,13 +68,13 @@ def main():
     print("Utilizzo modello Pre-allenato")
     
     model_loaded = PipelineModel.load("/app/model")
-    
+    # Check dell'accuracy del modello
     print("....Valutazione del modello...")
     transformed_df = model_loaded.transform(df)
 
     transformed_df.groupBy("prediction").count().show()
 
-    # Evaluate clustering by computing Silhouette score
+    # Metrica di valutazione scelta: Silhouette
     evaluator = ClusteringEvaluator()
 
     evaluator.setPredictionCol("prediction")

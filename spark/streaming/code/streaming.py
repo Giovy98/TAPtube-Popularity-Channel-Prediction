@@ -9,18 +9,18 @@ APP_NAME = 'taptube-streaming-class-prediction'
 APP_BATCH_INTERVAL = 1
 
 elastic_host = "https://es01:9200"
-elastic_index = "taptube_channel_indexing"
+elastic_index = "taptube_channel_indexing" # indice di elastic che serverà per collegarci a kibana
 
 # Elasticsearch configuration
 es = Elasticsearch(
     elastic_host,
-    ca_certs="/app/certs/ca/ca.crt",
-    basic_auth=("elastic", "passwordTAP"),
+    ca_certs="/app/certs/ca/ca.crt", # certificazioni
+    basic_auth=("elastic", "passwordTAP"), 
 )
 
 def get_record_schema():
     """
-    Define the schema of the incoming records.
+    Schema dei record provemienti da Kafka
     """
     return tp.StructType([
         tp.StructField("ChannelID:", tp.StringType(), False),
@@ -41,7 +41,7 @@ def process_batch(batch_df, batch_id):
         row_dict = row.asDict()
         id = f'{batch_id}-{idx}'
         try:
-            row_json = json.dumps(row_dict)  # Ensure row is JSON serializable
+            row_json = json.dumps(row_dict)  # converto a JSON
             resp = es.index(index=elastic_index, id=id, body=row_json)
             print(f"Indexed record {id} to Elasticsearch with response: {resp['result']}")
         except Exception as e:
@@ -53,9 +53,10 @@ def main():
     
     print("[Read]: Model Loaded")
 
-    model = PipelineModel.load("model")  # Model loaded
+    model = PipelineModel.load("model")  # Model caricato dalla cartella "model"
     schema = get_record_schema()
 
+    # Gestire i dati proveniente da kafka
     df = spark.readStream.format('kafka') \
         .option('kafka.bootstrap.servers', 'broker:9092') \
         .option('subscribe', 'taptube_channel') \
@@ -63,7 +64,7 @@ def main():
         .select(from_json(col("value").cast("string"), schema).alias("data")) \
         .selectExpr("data.*")
     
-    print("[Use]: Model Loaded")
+    print("[Use]: Model Loaded") # Modello caricato pronto per l'utilizzo
     
     prediction = model.transform(df)
     
@@ -75,10 +76,11 @@ def main():
     
     prediction = prediction.select("ChannelID:", "Title", "Country", "Subscribers", "TotalVideo", "Views", "Join_date", "@timestamp", "popolarita")
     
-    # Convert the necessary fields to JSON serializable format
+    # Join_date e @timestamp con un check aggiuntivo
     prediction = prediction.withColumn("Join_date", col("Join_date").cast("string"))
     prediction = prediction.withColumn("@timestamp", col("@timestamp").cast("string"))
-    
+
+    # Scrivo su elastic
     prediction.writeStream\
         .foreachBatch(process_batch) \
         .start() \

@@ -34,7 +34,6 @@ Vedi la cartella ***doc*** per maggiori dettagli
   - streaming/: relativa allo streaming dei dati;
   - training/: relativa all'allenamento del modello per poi fare streaming.
 - .env: File di configurazione (contiene variabili d'ambiente o configurazioni varie).
-- .gitignore: file utilizzato per specificare i file e le cartelle che Git deve ignorare.
 - docker-compose.yaml: file di configurazione per Docker Compose, utilizzato per gestire i container Docker.
 
 

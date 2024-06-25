@@ -1,0 +1,11 @@
+version: '3'
+services:
+  spark:
+    build: .
+    container_name: spark_training
+    volumes:
+      - model_volume:/app
+
+volumes:
+  model_volume:
+    driver: local

@@ -28,13 +28,13 @@ Vedi la cartella ***doc*** per maggiori dettagli
 
 ## Struttura della Repositery
 - El_Kibana/: contiene i file relativi a Elasticsearch e Kibana.
+- dashboard/: contene la Dashboard salvata. 
 - logstash/: cartella contenente i file relativi a Logstash e la sua configurazione.
 - producer/: cartella contenente i file del producer (file.py, Key di Youtube, requisiti vari etc..)
 - spark/: contiene due sottocartelle
   - streaming/: relativa allo streaming dei dati;
   - training/: relativa all'allenamento del modello per poi fare streaming.
 - .env: File di configurazione (contiene variabili d'ambiente o configurazioni varie).
-- .gitignore: file utilizzato per specificare i file e le cartelle che Git deve ignorare.
 - docker-compose.yaml: file di configurazione per Docker Compose, utilizzato per gestire i container Docker.
 
 
@@ -43,7 +43,7 @@ Vedi la cartella ***doc*** per maggiori dettagli
 1. Clonare la repository del progetto
    
 ```
-git clone 
+git clone https://github.com/Giovy98/TAPtube-Popularity-Prediction.git
 ```
 
 2. Vai nella cartella **producer**, modifica il file ***producer.env*** (MY_API_KEY = "La tua chiave ")
@@ -54,6 +54,18 @@ git clone
 cd TAPtube-Popularity-Prediction 
 docker-compose up (-d) # -d: per la detach mode
 ```
+
+4. Ora il producer genererà i dati (**Attenzione**: ricorda che hai un numero limitato di quote, circa 10.000 Queries al giorno.  **[Documentazione Calcolo delle quote](https://developers.google.com/youtube/v3/determine_quota_cost?hl=it)**)
+
+5. Vai su Kibana accedento a:
+   
+```
+http://localhost:5601
+```
+
+e importa la ***Dashboard*** localizzata nella cartella ```dashboard/TAPtubeDashboard.ndjson``` direttamente su Kibana nella sezione ```Left Hambuger menu > Management > Stack Management > Saved Objects > Import```.
+
+**Attenzione**: quando tirate sù una nuova istanza di Kibana, dovrete stare attenti a ricreare la **Data View** allo stesso modo, così che la Dashboard che avete importato possa operare con lo ```stesso tipo di dati```. 
 
 ## Possibili Ottimizzazioni
 
@@ -68,7 +80,7 @@ depends_on:
 # docker-compose--> logstash
 
 healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9600/_node/pipelines/main?pretty"] #  fa parte delle API di monitoring di Logstash
+      test: ["CMD", "curl", "-f", "http://localhost:5001/_node/pipelines/main?pretty"] #  fa parte delle API di monitoring di Logstash
       interval: 10s
       timeout: 10s
       retries: 5

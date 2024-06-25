@@ -43,7 +43,7 @@ Vedi la cartella ***doc*** per maggiori dettagli
 1. Clonare la repository del progetto
    
 ```
-git clone 
+git clone https://github.com/Giovy98/TAPtube-Popularity-Prediction.git
 ```
 
 2. Vai nella cartella **producer**, modifica il file ***producer.env*** (MY_API_KEY = "La tua chiave ")

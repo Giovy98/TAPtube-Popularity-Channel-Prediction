@@ -67,7 +67,7 @@ depends_on:
 # docker-compose--> logstash
 
 healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9600/_node/pipelines/main?pretty"] #  fa parte delle API di monitoring di Logstash
+      test: ["CMD", "curl", "-f", "http://localhost:5001/_node/pipelines/main?pretty"] #  fa parte delle API di monitoring di Logstash
       interval: 10s
       timeout: 10s
       retries: 5

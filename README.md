@@ -1,8 +1,8 @@
-# TAPtube-Popularity-Prediction
+# TAPtube-Popularity-Channel-Prediction
 
 ## Introduzione
 
-Il progetto **TAPtube Popularity Prediction** si propone di sviluppare un sistema di predizione in tempo reale per stimare la popolarità di un canale YouTube. L'obiettivo è visualizzare graficamente i risultati delle previsioni ottenute, fornendo agli utenti uno strumento per valutare l'andamento potenziale di un canale sulla piattaforma.
+Il progetto **TAPtube Popularity Channel Prediction** si propone di sviluppare un sistema di predizione in tempo reale per stimare la popolarità di un canale YouTube. L'obiettivo è visualizzare graficamente i risultati delle previsioni ottenute, fornendo agli utenti uno strumento per valutare l'andamento potenziale di un canale sulla piattaforma.
 
 ## Data Pipeline 
 <p align="center"><img src="./doc/images/pipeline.jpg" alt="Data Pipeline" width="800"/></p>
